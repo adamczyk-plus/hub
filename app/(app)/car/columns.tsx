@@ -1,7 +1,7 @@
 "use client";
 
+import { Refueling } from "@/app/api/refuelings/route";
 import { ColumnDef } from "@tanstack/react-table";
-import { Refueling } from "./api/refuelings/route";
 
 export const columns: ColumnDef<Refueling>[] = [
   { accessorKey: "date", header: "Data" },
@@ -9,11 +9,8 @@ export const columns: ColumnDef<Refueling>[] = [
     accessorKey: "cost",
     header: "Koszt",
     cell: ({ row }) => {
-      console.debug(row);
       const a: number = row.getValue("pricePerLiter");
       const b: number = row.getValue("liters");
-      console.debug(a);
-      console.debug(b);
       const c = a * b;
       return c.toFixed(2);
     },

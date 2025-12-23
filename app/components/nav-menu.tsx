@@ -1,43 +1,47 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
 import {
   NavigationMenu,
-  NavigationMenuContent,
   NavigationMenuItem,
   NavigationMenuLink,
   NavigationMenuList,
-  NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu";
-import { CarFrontIcon, MoonIcon, SunIcon } from "lucide-react";
+import {
+  CarFrontIcon,
+  HomeIcon,
+  LogOutIcon,
+  MoonIcon,
+  SunIcon,
+} from "lucide-react";
 import { useTheme } from "next-themes";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { MenuItem } from "./menu-item";
+import { startTransition, useActionState } from "react";
+import { logout } from "../auth/actions/logout";
+import { redirect } from "next/navigation";
 
+const initialState = { message: "" };
 export function NavMenu() {
   const { setTheme, resolvedTheme } = useTheme();
-  const pathname = usePathname();
-  console.debug(pathname);
+  // @ts-expect-error to be done
+  const [_1, action] = useActionState(logout, initialState);
+
+  const handleLogout = () => {
+    // @ts-expect-error to be done
+    startTransition(() => action({ message: "" }));
+  };
 
   return (
     <NavigationMenu>
-      <NavigationMenuList className="flex justify-between w-screen p-2">
-        <div className="flex gap-2">
-          <NavigationMenuItem>
-            <NavigationMenuLink asChild>
-              <Link href="/">Home</Link>
-            </NavigationMenuLink>
-          </NavigationMenuItem>
-          <NavigationMenuItem>
-            <NavigationMenuLink asChild>
-              <Link href="car" className="flex items-center gap-2 flex-row">
-                <CarFrontIcon />
-                <span>Samochód</span>
-              </Link>
-            </NavigationMenuLink>
-          </NavigationMenuItem>
+      <NavigationMenuList>
+        <div className="flex gap-2 items-center">
+          <MenuItem href="/" Icon={HomeIcon}>
+            Home
+          </MenuItem>
+          <MenuItem href="/car" Icon={CarFrontIcon}>
+            Samochód
+          </MenuItem>
         </div>
-        <div>
+        <div className="flex gap-2 items-center">
           <NavigationMenuItem>
             <NavigationMenuLink
               className="cursor-pointer"
@@ -50,6 +54,9 @@ export function NavMenu() {
               <MoonIcon className="hidden dark:block" />
             </NavigationMenuLink>
           </NavigationMenuItem>
+          <MenuItem href="#" Icon={LogOutIcon} handleClick={handleLogout}>
+            Wyloguj
+          </MenuItem>
         </div>
       </NavigationMenuList>
     </NavigationMenu>
