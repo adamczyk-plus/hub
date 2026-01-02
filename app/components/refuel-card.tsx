@@ -6,9 +6,9 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Refueling } from "../api/refuelings/route";
+import { RefuelingsRow } from "@/lib/db/schema/refuelings";
 
-export default function RefuelCard({ payload }: { payload: Refueling }) {
+export default function RefuelCard({ payload }: { payload: RefuelingsRow }) {
   const { pricePerLiter, liters, date, odometer, notes } = payload;
   const cost = (pricePerLiter * liters).toFixed(2);
   const costFormatted = new Intl.NumberFormat("pl-PL", {
@@ -24,7 +24,7 @@ export default function RefuelCard({ payload }: { payload: Refueling }) {
     <Card className="w-1/3">
       <CardHeader>
         <CardTitle>{costFormatted}</CardTitle>
-        <CardDescription>{date}</CardDescription>
+        <CardDescription>{date.toString()}</CardDescription>
       </CardHeader>
       <CardContent>
         <p>{notes}</p>
