@@ -1,9 +1,9 @@
 "use client";
 
-import { Refueling } from "@/app/api/refuelings/route";
+import { RefuelingsRow } from "@/lib/db/schema/refuelings";
 import { ColumnDef } from "@tanstack/react-table";
 
-export const columns: ColumnDef<Refueling>[] = [
+export const columns: ColumnDef<RefuelingsRow>[] = [
   { accessorKey: "date", header: "Data" },
   {
     accessorKey: "cost",
