@@ -6,9 +6,9 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { RefuelingsRow } from "@/lib/db/schema/refuelings";
+import { RefuelingsRecord } from "@/lib/db/schema/refuelings";
 
-export default function RefuelCard({ payload }: { payload: RefuelingsRow }) {
+export default function RefuelCard({ payload }: { payload: RefuelingsRecord }) {
   const { pricePerLiter, liters, date, odometer, notes } = payload;
   const cost = (pricePerLiter * liters).toFixed(2);
   const costFormatted = new Intl.NumberFormat("pl-PL", {

@@ -8,3 +8,12 @@ export interface RefuelingsRow extends QueryResultRow {
   odometer: number;
   notes: string;
 }
+
+export interface RefuelingsRecord {
+  id: number;
+  date: string;
+  liters: number;
+  pricePerLiter: number;
+  odometer: number;
+  notes: string;
+}
