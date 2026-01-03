@@ -3,6 +3,8 @@ import { format } from "date-fns";
 import RefuelCard from "@/app/components/refuel-card";
 import { RefuelingsRow } from "@/lib/db/schema/refuelings";
 
+export const revalidate = 0;
+
 export default async function CarPage() {
   const data = await getData();
 
