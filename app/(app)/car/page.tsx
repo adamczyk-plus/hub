@@ -1,7 +1,8 @@
 import { query } from "@/lib/db/db";
 import { format } from "date-fns";
-import RefuelCard from "@/app/components/refuel-card";
-import { RefuelingsRow } from "@/lib/db/schema/refuelings";
+import FillUpCard from "@/app/components/fill-up-card";
+import { FillUpRow } from "@/lib/db/schema/fill-up";
+import { AddFillUpDialog } from "./components/add-fill-up-dialog";
 
 export const revalidate = 0;
 
@@ -10,16 +11,17 @@ export default async function CarPage() {
 
   return (
     <div className="flex flex-col gap-5 items-center">
+      <AddFillUpDialog />
       {data.map((item) => (
-        <RefuelCard key={item.id} payload={item} />
+        <FillUpCard key={item.id} payload={item} />
       ))}
     </div>
   );
 }
 
 const getData = async () => {
-  const rows = await query<RefuelingsRow>(
-    "select * from refueling order by date desc"
+  const rows = await query<FillUpRow>(
+    "select * from fill_ups order by date desc"
   );
 
   return rows.map(({ date, ...row }) => ({
@@ -27,7 +29,7 @@ const getData = async () => {
     date: format(date, "yyyy-MM-dd"),
     liters: row.liters,
     pricePerLiter: row.price_per_liter,
-    odometer: row.odometer,
+    odoCounter: row.odo_counter,
     notes: row.notes ?? "",
   }));
 };

@@ -29,7 +29,7 @@ export function MenuItem({ children, href, Icon, handleClick }: Props) {
           onClick={handleClick}
         >
           {Icon && <Icon />}
-          {!isActive && <span>{children}</span>}
+          <span>{children}</span>
         </Link>
       </NavigationMenuLink>
     </NavigationMenuItem>

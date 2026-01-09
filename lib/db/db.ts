@@ -11,7 +11,7 @@ const pool = new Pool({
 
 export async function query<T extends QueryResultRow = QueryResultRow>(
   text: string,
-  params?: string[]
+  params?: (string | number)[]
 ) {
   const { rows } = await pool.query<T>(text, params);
   return rows;

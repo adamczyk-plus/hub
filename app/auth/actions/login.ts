@@ -4,6 +4,7 @@ import { encrypt } from "@/lib/auth/jwt";
 import { query } from "@/lib/db/db";
 import { cookies } from "next/headers";
 import bcrypt from "bcrypt";
+import { isProduction } from "@/lib/env";
 
 export async function login(
   _1: { error?: string },
@@ -23,7 +24,7 @@ export async function login(
   const token = await encrypt({ userId: id, username });
   (await cookies()).set("token", token, {
     httpOnly: true,
-    secure: true,
+    secure: isProduction,
     maxAge: 3600,
   });
 
