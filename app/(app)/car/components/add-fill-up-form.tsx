@@ -17,12 +17,14 @@ export function AddFillUpForm() {
     total: string;
     notes: string;
     date?: Date;
+    discount: string;
   }>({
     odo: "",
     liters: "",
     pricePerLiter: "",
     total: "",
     notes: "",
+    discount: "",
   });
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
@@ -34,6 +36,7 @@ export function AddFillUpForm() {
       pricePerLiter: Number(form.pricePerLiter),
       notes: form.notes,
       date: form.date ? format(form.date, "yyyy-MM-dd") : "",
+      discount: Number(form.discount),
     };
 
     startTransition(async () => {
@@ -44,7 +47,7 @@ export function AddFillUpForm() {
 
   const handleChange = (e: React.ChangeEvent<HTMLFormElement>) => {
     const { name, value } = e.target;
-    setForm((prev) => ({ ...prev, [name]: value }));
+    setForm(prev => ({ ...prev, [name]: value }));
 
     if (!["liters", "pricePerLiter"].includes(name)) return;
 
@@ -58,45 +61,32 @@ export function AddFillUpForm() {
       currency: "PLN",
     }).format(totalNumber);
 
-    setForm((prev) => ({ ...prev, total }));
+    setForm(prev => ({ ...prev, total }));
   };
 
   const updateForm = (e: ChangeEvent<HTMLInputElement>) =>
-    setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+    setForm(prev => ({ ...prev, [e.target.name]: e.target.value }));
 
   return (
-    <form
-      className="grid items-start gap-6"
-      onSubmit={handleSubmit}
-      onChange={handleChange}
-    >
-      <div className="grid gap-1">
-        <Label htmlFor="odo">Licznik</Label>
-        <Input
-          id="odo"
-          name="odo"
-          value={form.odo}
-          onChange={updateForm}
-        ></Input>
+    <form className="grid items-start gap-6" onSubmit={handleSubmit} onChange={handleChange}>
+      <div className="grid gap-1 grid-cols-2">
+        <div className="grid gap-1">
+          <Label htmlFor="odo">Licznik</Label>
+          <Input id="odo" name="odo" value={form.odo} onChange={updateForm}></Input>
+        </div>
+        <div className="grid gap-1">
+          <Label htmlFor="liters">Litry</Label>
+          <Input id="liters" name="liters" value={form.liters} onChange={updateForm}></Input>
+        </div>
       </div>
       <div className="grid gap-1 grid-cols-2">
         <div className="grid gap-1">
-          <Label htmlFor="liters">Litry</Label>
-          <Input
-            id="liters"
-            name="liters"
-            value={form.liters}
-            onChange={updateForm}
-          ></Input>
+          <Label htmlFor="pricePerLiter">Cena za litr</Label>
+          <Input id="pricePerLiter" name="pricePerLiter" value={form.pricePerLiter} onChange={updateForm}></Input>
         </div>
         <div className="grid gap-1">
-          <Label htmlFor="pricePerLiter">Cena za litr</Label>
-          <Input
-            id="pricePerLiter"
-            name="pricePerLiter"
-            value={form.pricePerLiter}
-            onChange={updateForm}
-          ></Input>
+          <Label htmlFor="discount">Rabat</Label>
+          <Input id="discount" name="discount" value={form.discount} onChange={updateForm}></Input>
         </div>
       </div>
       <div className="grid grid-cols-2 gap-1">
@@ -104,17 +94,9 @@ export function AddFillUpForm() {
           <Label htmlFor="total">Całkowity koszt</Label>
           <Input id="total" readOnly value={form.total}></Input>
         </div>
-        <DatePicker
-          date={form.date}
-          setDate={(date) => setForm((prev) => ({ ...prev, date }))}
-        />
+        <DatePicker date={form.date} setDate={date => setForm(prev => ({ ...prev, date }))} />
       </div>
-      <Input
-        placeholder="Dodatkowe uwagi"
-        name="notes"
-        value={form.notes}
-        onChange={updateForm}
-      ></Input>
+      <Input placeholder="Dodatkowe uwagi" name="notes" value={form.notes} onChange={updateForm}></Input>
       {/* {error && <p className="text-red-600 font-bold">{error}</p>} */}
       <Button>Zapisz</Button>
     </form>

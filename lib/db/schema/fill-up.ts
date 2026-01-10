@@ -7,6 +7,7 @@ export interface FillUpRow extends QueryResultRow {
   price_per_liter: number;
   odo_counter: number;
   notes: string;
+  discount: number;
 }
 
 export interface FillUpRecord {
@@ -16,4 +17,5 @@ export interface FillUpRecord {
   pricePerLiter: number;
   odoCounter: number;
   notes: string;
+  discount: number;
 }

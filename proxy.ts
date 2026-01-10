@@ -6,7 +6,7 @@ export async function proxy(req: NextRequest) {
   const url = req.nextUrl.clone();
   const payload = await getJwtPayload();
 
-  console.debug(payload);
+  // console.debug(payload);
 
   if (!publicPaths.includes(url.pathname)) {
     if (!payload) {
