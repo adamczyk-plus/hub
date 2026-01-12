@@ -36,7 +36,7 @@ export function AddFillUpDialog() {
             <DialogTitle>Dodaj</DialogTitle>
             <DialogDescription>Tankowanie</DialogDescription>
           </DialogHeader>
-          <AddFillUpForm />
+          <AddFillUpForm closeContainer={() => setOpen(false)} />
         </DialogContent>
       </Dialog>
     );
@@ -51,7 +51,7 @@ export function AddFillUpDialog() {
             <DrawerTitle>Dodaj</DrawerTitle>
             <DrawerDescription>Tankowanie</DrawerDescription>
           </DrawerHeader>
-          <AddFillUpForm />
+          <AddFillUpForm closeContainer={() => setOpen(false)} />
         </DrawerContent>
       </Drawer>
     );

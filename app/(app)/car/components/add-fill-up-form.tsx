@@ -8,7 +8,7 @@ import { ChangeEvent, FormEvent, useState, useTransition } from "react";
 import { DatePicker } from "@/components/common/date-picker";
 import { format } from "date-fns";
 
-export function AddFillUpForm() {
+export function AddFillUpForm({ closeContainer }: { closeContainer: () => void }) {
   const [, startTransition] = useTransition();
   const [form, setForm] = useState<{
     odo: string;
@@ -41,7 +41,7 @@ export function AddFillUpForm() {
 
     startTransition(async () => {
       const err = await addFillUp(payload);
-      console.debug(err);
+      if (!err) closeContainer();
     });
   };
 
