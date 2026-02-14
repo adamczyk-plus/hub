@@ -6,13 +6,13 @@ import { format } from "date-fns";
 import { pl } from "date-fns/locale";
 import { MoveRightIcon } from "lucide-react";
 
-const numberFormat = (v: number) =>
+export const numberFormat = (v: number) =>
   new Intl.NumberFormat("pl-PL", {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   }).format(v);
 
-const currencyFormat = (v: number) =>
+export const currencyFormat = (v: number) =>
   new Intl.NumberFormat("pl-PL", {
     style: "currency",
     currency: "PLN",

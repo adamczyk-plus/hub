@@ -11,7 +11,6 @@ import {
 } from "@/components/ui/dialog";
 import { AddFillUpForm } from "./add-fill-up-form";
 import { useState } from "react";
-import { useIsDesktop } from "@/hooks/useIsDesktop";
 import {
   Drawer,
   DrawerContent,
@@ -21,26 +20,10 @@ import {
   DrawerTrigger,
 } from "@/components/ui/drawer";
 
-export function AddFillUpDialog() {
+export function AddFillUpDialog({ isMobile }: { isMobile: boolean }) {
   const [open, setOpen] = useState(false);
-  const isDesktop = useIsDesktop();
 
-  if (isDesktop)
-    return (
-      <Dialog open={open} onOpenChange={setOpen}>
-        <DialogTrigger asChild>
-          <Button variant={"outline"}>Dodaj +</Button>
-        </DialogTrigger>
-        <DialogContent className="sm:max-w-100">
-          <DialogHeader>
-            <DialogTitle>Dodaj</DialogTitle>
-            <DialogDescription>Tankowanie</DialogDescription>
-          </DialogHeader>
-          <AddFillUpForm closeContainer={() => setOpen(false)} />
-        </DialogContent>
-      </Dialog>
-    );
-  else
+  if (isMobile)
     return (
       <Drawer open={open} onOpenChange={setOpen} autoFocus={open}>
         <DrawerTrigger asChild>
@@ -54,5 +37,20 @@ export function AddFillUpDialog() {
           <AddFillUpForm closeContainer={() => setOpen(false)} />
         </DrawerContent>
       </Drawer>
+    );
+  else
+    return (
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogTrigger asChild>
+          <Button variant={"outline"}>Dodaj +</Button>
+        </DialogTrigger>
+        <DialogContent className="sm:max-w-100">
+          <DialogHeader>
+            <DialogTitle>Dodaj</DialogTitle>
+            <DialogDescription>Tankowanie</DialogDescription>
+          </DialogHeader>
+          <AddFillUpForm closeContainer={() => setOpen(false)} />
+        </DialogContent>
+      </Dialog>
     );
 }
