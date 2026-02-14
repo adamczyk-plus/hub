@@ -6,13 +6,7 @@ import {
   NavigationMenuLink,
   NavigationMenuList,
 } from "@/components/ui/navigation-menu";
-import {
-  CarFrontIcon,
-  HomeIcon,
-  LogOutIcon,
-  MoonIcon,
-  SunIcon,
-} from "lucide-react";
+import { CarFrontIcon, DollarSignIcon, HomeIcon, LogOutIcon, MoonIcon, SunIcon } from "lucide-react";
 import { useTheme } from "next-themes";
 import { MenuItem } from "./menu-item";
 import { startTransition, useActionState } from "react";
@@ -39,6 +33,9 @@ export function NavMenu() {
           </MenuItem>
           <MenuItem href="/car" Icon={CarFrontIcon}>
             Samochód
+          </MenuItem>
+          <MenuItem href="/budget" Icon={DollarSignIcon}>
+            Budżet
           </MenuItem>
         </div>
         <div className="flex gap-2 items-center">
