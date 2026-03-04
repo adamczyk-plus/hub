@@ -2,52 +2,47 @@
 
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { ColumnDef, flexRender, getCoreRowModel, useReactTable } from "@tanstack/react-table";
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { currencyFormat } from "../../car/components/fill-up-card";
+import { Transaction } from "@/app/api/budget/transactions/route";
+import { Category, Store } from "@/app/api/budget/dictionaries/route";
 
-interface BudgetRecord {
-  date: string;
-  shop: string;
-  amounts: number[];
-}
-
-interface FoodBudgetRecord extends BudgetRecord {
-  n?: string;
-}
-
-export const BudgetList = () => {
-  const columns = useMemo<ColumnDef<FoodBudgetRecord>[]>(
+export const BudgetList = ({
+  stores,
+  categories,
+  data,
+}: {
+  stores: Store[];
+  categories: Category[];
+  data: Transaction[];
+}) => {
+  const columns = useMemo<ColumnDef<Transaction>[]>(
     () => [
-      { accessorKey: "shop", header: () => <span>Sklep</span> },
       {
-        accessorKey: "amounts",
-        header: "Kwoty",
+        accessorKey: "storeId",
+        header: () => <span>Sklep</span>,
         cell: ({ getValue }) => {
-          const value = getValue() as number[];
-          return value.join(", ");
+          const store = stores.find(({ id }) => getValue() === id);
+          return store?.name ?? "";
         },
       },
+      { accessorKey: "amount", header: "Kwota", cell: ({ getValue }) => currencyFormat(getValue() as number) },
       {
-        id: "total",
-        header: "Suma",
-        accessorFn: ({ amounts }) => amounts.reduce((acc, n) => acc + n, 0),
-        cell: ({ getValue }) => currencyFormat(getValue() as number),
+        accessorKey: "categoryId",
+        header: "Kategoria",
+        cell: ({ getValue }) => {
+          const category = categories.find(({ id }) => getValue() === id);
+          return category?.name ?? "";
+        },
       },
     ],
-    []
+    [stores, categories],
   );
-
-  const [data] = useState<BudgetRecord[]>([
-    { date: "", amounts: [12.47, 198.32, 4.85, 76.9, 249.12, 33.58, 160.04], shop: "Biedronka" },
-    { date: "", amounts: [89.71, 5.26, 142.99, 217.63, 61.08, 190.44, 27.36, 104.75], shop: "Lidl" },
-    { date: "", amounts: [8.91, 233.5, 54.19, 171.82, 95.07, 14.66, 120.38], shop: "Netto" },
-    { date: "", amounts: [206.94, 68.55, 158.21, 3.74, 184.09, 41.67, 225.88, 99.3], shop: "Auchan" },
-  ]);
 
   return <List data={data} columns={columns} />;
 };
 
-function List({ data, columns }: { data: BudgetRecord[]; columns: ColumnDef<BudgetRecord>[] }) {
+function List({ data, columns }: { data: Transaction[]; columns: ColumnDef<Transaction>[] }) {
   const table = useReactTable({ columns, data, debugTable: true, getCoreRowModel: getCoreRowModel() });
 
   return (
