@@ -16,15 +16,19 @@ export function DatePicker({ date, setDate }: { date?: Date; setDate: (_1?: Date
 
   return (
     <div className="flex flex-col gap-1">
-      <Label>Data</Label>
+      {/* <Label>Data</Label> */}
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
-          <Button variant="outline" id="date" className="w-full justify-between font-normal">
+          <Button
+            variant="outline"
+            id="date"
+            className={`w-full justify-between font-normal ${date ? "" : "text-muted-foreground"}`}
+          >
             {date ? formatDate(date) : "Wybierz datę"}
-            <ChevronDownIcon />
+            <ChevronDownIcon className="text-muted-foreground opacity-50" />
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="w-auto overflow- p-0">
+        <PopoverContent className="w-auto p-0">
           <Calendar
             fixedWeeks
             weekStartsOn={1}
