@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 export const FillUpsList = ({ data }: { data: FillUpRecord[] }) => {
   const dataWithPrevs = useMemo(
     () => data.map((record, index) => ({ ...record, prev: data[index - 1] ?? null })),
-    [data]
+    [data],
   );
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
   const table = useReactTable({
@@ -67,7 +67,10 @@ export const FillUpsList = ({ data }: { data: FillUpRecord[] }) => {
         <Button
           variant={"outline"}
           size="sm"
-          onClick={() => setPagination(prev => ({ ...prev, pageIndex: prev.pageIndex++ }))}
+          onClick={() => {
+            console.debug("clicked");
+            setPagination(prev => ({ ...prev, pageIndex: prev.pageIndex++ }));
+          }}
           disabled={!table.getCanNextPage()}
         >
           Dalej

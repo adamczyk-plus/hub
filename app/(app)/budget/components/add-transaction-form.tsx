@@ -77,7 +77,15 @@ export function AddTransactionForm({
 
   return (
     <form className="grid items-start gap-1 grid-cols-4" onSubmit={handleSubmit}>
-      <Input className="h-8" placeholder="Kwota" name="amount" value={form.amount} onChange={updateForm} />
+      <Input
+        className="h-8"
+        placeholder="Kwota"
+        name="amount"
+        value={form.amount}
+        onChange={updateForm}
+        inputMode="decimal"
+        pattern="[0-9]*"
+      />
       <Select value={form.categoryId} onValueChange={(categoryId: UUID) => setForm(prev => ({ ...prev, categoryId }))}>
         <SelectTrigger className="w-full col-span-3" size="sm">
           <SelectValue placeholder="Kategoria" />

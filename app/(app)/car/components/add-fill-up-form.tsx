@@ -72,21 +72,49 @@ export function AddFillUpForm({ closeContainer }: { closeContainer: () => void }
       <div className="grid gap-1 grid-cols-2">
         <div className="grid gap-1">
           <Label htmlFor="odo">Licznik</Label>
-          <Input id="odo" name="odo" value={form.odo} onChange={updateForm}></Input>
+          <Input
+            id="odo"
+            name="odo"
+            value={form.odo}
+            onChange={updateForm}
+            inputMode="numeric"
+            pattern="[0-9]*"
+          ></Input>
         </div>
         <div className="grid gap-1">
           <Label htmlFor="liters">Litry</Label>
-          <Input id="liters" name="liters" value={form.liters} onChange={updateForm}></Input>
+          <Input
+            id="liters"
+            name="liters"
+            value={form.liters}
+            onChange={updateForm}
+            inputMode="decimal"
+            pattern="[0-9]*"
+          ></Input>
         </div>
       </div>
       <div className="grid gap-1 grid-cols-2">
         <div className="grid gap-1">
           <Label htmlFor="pricePerLiter">Cena za litr</Label>
-          <Input id="pricePerLiter" name="pricePerLiter" value={form.pricePerLiter} onChange={updateForm}></Input>
+          <Input
+            id="pricePerLiter"
+            name="pricePerLiter"
+            value={form.pricePerLiter}
+            onChange={updateForm}
+            inputMode="decimal"
+            pattern="[0-9]*"
+          ></Input>
         </div>
         <div className="grid gap-1">
           <Label htmlFor="discount">Rabat</Label>
-          <Input id="discount" name="discount" value={form.discount} onChange={updateForm}></Input>
+          <Input
+            id="discount"
+            name="discount"
+            value={form.discount}
+            onChange={updateForm}
+            inputMode="decimal"
+            pattern="[0-9]*"
+          ></Input>
         </div>
       </div>
       <div className="grid grid-cols-2 gap-1">
