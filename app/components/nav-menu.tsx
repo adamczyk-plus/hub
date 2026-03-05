@@ -11,11 +11,13 @@ import { useTheme } from "next-themes";
 import { MenuItem } from "./menu-item";
 import { startTransition, useActionState } from "react";
 import { logout } from "../auth/actions/logout";
-import { redirect } from "next/navigation";
+import { usePathname } from "next/navigation";
+import { useViewport } from "@/hooks/useViewport";
 
 const initialState = { message: "" };
 export function NavMenu() {
   const { setTheme, resolvedTheme } = useTheme();
+  const { isMobile } = useViewport();
   // @ts-expect-error to be done
   const [_1, action] = useActionState(logout, initialState);
 
@@ -24,18 +26,20 @@ export function NavMenu() {
     startTransition(() => action({ message: "" }));
   };
 
+  const path = usePathname();
+
   return (
     <NavigationMenu>
       <NavigationMenuList>
         <div className="flex gap-2 items-center">
           <MenuItem href="/" Icon={HomeIcon}>
-            Home
+            {isMobile && path !== "/" ? undefined : "Home"}
           </MenuItem>
           <MenuItem href="/car" Icon={CarFrontIcon}>
-            Samochód
+            {isMobile && path !== "/car" ? undefined : "Samochód"}
           </MenuItem>
           <MenuItem href="/budget" Icon={DollarSignIcon}>
-            Budżet
+            {isMobile && path !== "/budget" ? undefined : "Budżet"}
           </MenuItem>
         </div>
         <div className="flex gap-2 items-center">
@@ -52,7 +56,7 @@ export function NavMenu() {
             </NavigationMenuLink>
           </NavigationMenuItem>
           <MenuItem href="#" Icon={LogOutIcon} handleClick={handleLogout}>
-            Wyloguj
+            {isMobile ? undefined : "Wyloguj"}
           </MenuItem>
         </div>
       </NavigationMenuList>
