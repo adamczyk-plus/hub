@@ -89,7 +89,7 @@ export function AddFillUpForm({ closeContainer }: { closeContainer: () => void }
             value={form.liters}
             onChange={updateForm}
             inputMode="decimal"
-            pattern="[0-9]*"
+            pattern="[0-9]+(\.[0-9]+)?"
           ></Input>
         </div>
       </div>
@@ -102,7 +102,7 @@ export function AddFillUpForm({ closeContainer }: { closeContainer: () => void }
             value={form.pricePerLiter}
             onChange={updateForm}
             inputMode="decimal"
-            pattern="[0-9]*"
+            pattern="[0-9]+(\.[0-9]+)?"
           ></Input>
         </div>
         <div className="grid gap-1">
@@ -113,7 +113,7 @@ export function AddFillUpForm({ closeContainer }: { closeContainer: () => void }
             value={form.discount}
             onChange={updateForm}
             inputMode="decimal"
-            pattern="[0-9]*"
+            pattern="[0-9]+(\.[0-9]+)?"
           ></Input>
         </div>
       </div>

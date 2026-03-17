@@ -84,7 +84,7 @@ export function AddTransactionForm({
         value={form.amount}
         onChange={updateForm}
         inputMode="decimal"
-        pattern="[0-9]*"
+        pattern="[0-9]+(\.[0-9]+)?"
       />
       <Select value={form.categoryId} onValueChange={(categoryId: UUID) => setForm(prev => ({ ...prev, categoryId }))}>
         <SelectTrigger className="w-full col-span-3" size="sm">
