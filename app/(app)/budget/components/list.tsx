@@ -1,82 +1,79 @@
 "use client";
 
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { ColumnDef, flexRender, getCoreRowModel, useReactTable } from "@tanstack/react-table";
-import { useMemo } from "react";
-import { currencyFormat } from "../../car/components/fill-up-card";
+import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Transaction } from "@/app/api/budget/transactions/route";
 import { Category, Store } from "@/app/api/budget/dictionaries/route";
+import { Button } from "@/components/ui/button";
+import { MoreHorizontalIcon } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { deleteTransaction } from "../actions/deleteTransaction";
+import { UUID } from "crypto";
 
 export const BudgetList = ({
   stores,
   categories,
   data,
+  fetchData: refresh,
 }: {
   stores: Store[];
   categories: Category[];
   data: Transaction[];
+  fetchData: () => Promise<void>;
 }) => {
-  const columns = useMemo<ColumnDef<Transaction>[]>(
-    () => [
-      {
-        accessorKey: "storeId",
-        header: () => <span>Sklep</span>,
-        cell: ({ getValue }) => {
-          const store = stores.find(({ id }) => getValue() === id);
-          return store?.name ?? "";
-        },
-      },
-      { accessorKey: "amount", header: "Kwota", cell: ({ getValue }) => currencyFormat(getValue() as number) },
-      {
-        accessorKey: "categoryId",
-        header: "Kategoria",
-        cell: ({ getValue }) => {
-          const category = categories.find(({ id }) => getValue() === id);
-          return category?.name ?? "";
-        },
-      },
-    ],
-    [stores, categories],
-  );
-
-  return <List data={data} columns={columns} />;
-};
-
-function List({ data, columns }: { data: Transaction[]; columns: ColumnDef<Transaction>[] }) {
-  const table = useReactTable({ columns, data, debugTable: true, getCoreRowModel: getCoreRowModel() });
+  const handleDelete = async (id: UUID) => {
+    await deleteTransaction(id);
+    await refresh();
+  };
 
   return (
     <div className="p-2">
       <Table>
+        <TableCaption>Testowo</TableCaption>
         <TableHeader>
-          {table.getHeaderGroups().map(headerGroup => (
-            <TableRow key={headerGroup.id}>
-              {headerGroup.headers.map(header => (
-                <TableHead key={header.id}>
-                  {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
-                </TableHead>
-              ))}
-            </TableRow>
-          ))}
+          <TableRow>
+            <TableHead>Sklep</TableHead>
+            <TableHead>Kategoria</TableHead>
+            <TableHead>Kwota</TableHead>
+            <TableHead className="text-right">Akcje</TableHead>
+          </TableRow>
         </TableHeader>
         <TableBody>
-          {table.getRowModel().rows.length ? (
-            table.getRowModel().rows.map(row => (
-              <TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
-                {row.getVisibleCells().map(cell => (
-                  <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
-                ))}
+          {data.map(({ amount, id, storeId, categoryId }) => {
+            const store = stores.find(({ id }) => id === storeId)?.name;
+            const category = categories.find(({ id }) => id === categoryId)?.name;
+            return (
+              <TableRow key={id}>
+                <TableCell>{store}</TableCell>
+                <TableCell>{category}</TableCell>
+                <TableCell>{amount}</TableCell>
+                <TableCell className="text-right">
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant={"ghost"} size={"icon"} className="size-8">
+                        <MoreHorizontalIcon />
+                        <span className="sr-only">Open menu</span>
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuItem>Edytuj</DropdownMenuItem>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem onClick={() => handleDelete(id)} variant="destructive">
+                        Usuń
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </TableCell>
               </TableRow>
-            ))
-          ) : (
-            <TableRow>
-              <TableCell colSpan={columns.length} className="h-24 text-center">
-                No results...
-              </TableCell>
-            </TableRow>
-          )}
+            );
+          })}
         </TableBody>
       </Table>
     </div>
   );
-}
+};
