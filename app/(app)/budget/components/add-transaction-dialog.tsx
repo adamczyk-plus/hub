@@ -2,16 +2,18 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useState } from "react";
 import { AddTransactionForm } from "./add-transaction-form";
-import { Category, Store } from "@/app/api/budget/dictionaries/route";
+import { Category, CategorySubcategories, Subcategory } from "@/app/api/budget/dictionaries/route";
 
 export function AddTransactionDialog({
   fetchData: refresh,
   categories,
-  stores,
+  subcategories,
+  categorySubcategories,
 }: {
   fetchData: () => Promise<void>;
   categories: Category[];
-  stores: Store[];
+  subcategories: Subcategory[];
+  categorySubcategories: CategorySubcategories[];
 }) {
   const [open, setOpen] = useState(false);
 
@@ -28,7 +30,8 @@ export function AddTransactionDialog({
           closeDialog={() => setOpen(false)}
           refresh={refresh}
           categories={categories}
-          stores={stores}
+          subcategories={subcategories}
+          categorySubcategories={categorySubcategories}
         />
       </DialogContent>
     </Dialog>

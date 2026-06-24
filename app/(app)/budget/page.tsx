@@ -3,13 +3,14 @@
 import { BudgetList } from "./components/list";
 import { AddTransactionDialog } from "./components/add-transaction-dialog";
 import { useCallback, useEffect, useState } from "react";
-import { Transaction } from "@/app/api/budget/transactions/route";
-import { Category, Store } from "@/app/api/budget/dictionaries/route";
+import { Operation } from "@/app/api/budget/transactions/route";
+import { Category, CategorySubcategories, Subcategory } from "@/app/api/budget/dictionaries/route";
 
 function useBudgetData() {
-  const [data, setData] = useState<Transaction[]>([]);
-  const [stores, setStores] = useState<Store[]>([]);
+  const [data, setData] = useState<Operation[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
+  const [subcategories, setSubcategories] = useState<Subcategory[]>([]);
+  const [categorySubcategories, setCategorySubcategories] = useState<CategorySubcategories[]>([]);
 
   const fetchData = useCallback(async () => {
     const [dictRes, transRes] = await Promise.all([
@@ -17,11 +18,17 @@ function useBudgetData() {
       fetch("/api/budget/transactions"),
     ]);
 
-    const dictionaries = (await dictRes.json()) as { stores: Store[]; categories: Category[] };
+    const dictionaries = (await dictRes.json()) as {
+      categories: Category[];
+      subcategories: Subcategory[];
+      categorySubcategories: CategorySubcategories[];
+    };
     const transactions = await transRes.json();
 
-    setStores(dictionaries.stores);
     setCategories(dictionaries.categories);
+    setSubcategories(dictionaries.subcategories);
+    setCategorySubcategories(dictionaries.categorySubcategories);
+
     setData(transactions);
   }, []);
 
@@ -30,7 +37,7 @@ function useBudgetData() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  return { data, stores, categories, fetchData };
+  return { data, categories, subcategories, categorySubcategories, fetchData };
 }
 
 export default function BudgetPage() {

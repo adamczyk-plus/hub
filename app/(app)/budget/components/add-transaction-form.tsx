@@ -1,24 +1,15 @@
-import { Category, Store } from "@/app/api/budget/dictionaries/route";
+import { Category, CategorySubcategories, Subcategory } from "@/app/api/budget/dictionaries/route";
 import { DatePicker } from "@/components/common/date-picker";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { UUID } from "crypto";
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ChangeEvent, FormEvent, useState } from "react";
 import { toast } from "sonner";
 
 interface FormValues {
   date?: Date;
-  categoryId: UUID | "";
-  storeId: UUID | "";
+  categoryId?: number;
+  subcategoryId?: number;
   amount: string;
   descr: string;
 }
@@ -26,31 +17,30 @@ interface FormValues {
 export function AddTransactionForm({
   closeDialog,
   refresh,
-  stores,
+  subcategories,
   categories,
+  categorySubcategories,
 }: {
   closeDialog: () => void;
   refresh: () => Promise<void>;
   categories: Category[];
-  stores: Store[];
+  subcategories: Subcategory[];
+  categorySubcategories: CategorySubcategories;
 }) {
   const [form, setForm] = useState<FormValues>({
     date: new Date(),
-    categoryId: "",
-    storeId: "",
+    categoryId: undefined,
+    subcategoryId: undefined,
     amount: "",
     descr: "",
   });
 
-  const groups = categories
-    .filter(cat => !cat.parentId)
-    .map(cat => {
-      const children = categories.filter(child => child.parentId === cat.id);
-      return { ...cat, children };
-    });
+  const getSubcategoryById = (subcategoryId: number) => subcategories.find(({ id }) => id === subcategoryId);
 
   const updateForm = (e: ChangeEvent<HTMLInputElement>) =>
     setForm(prev => ({ ...prev, [e.target.name]: e.target.value }));
+
+  const subcats = form.categoryId ? (categorySubcategories?.[form.categoryId] ?? []) : [];
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -86,36 +76,44 @@ export function AddTransactionForm({
         inputMode="decimal"
         pattern="[0-9]+(\.[0-9]+)?"
       />
-      <Select value={form.categoryId} onValueChange={(categoryId: UUID) => setForm(prev => ({ ...prev, categoryId }))}>
+      <Select
+        value={form.categoryId?.toString()}
+        onValueChange={categoryId => {
+          console.debug(categorySubcategories);
+          setForm(prev => ({ ...prev, categoryId: +categoryId }));
+        }}
+      >
         <SelectTrigger className="w-full col-span-3" size="sm">
           <SelectValue placeholder="Kategoria" />
         </SelectTrigger>
         <SelectContent>
-          {groups.map(group => (
-            <SelectGroup key={group.id}>
-              <SelectLabel>{group.name}</SelectLabel>
-              {group.children.map(child => (
-                <SelectItem key={child.id} value={child.id}>
-                  {child.name}
-                </SelectItem>
-              ))}
-            </SelectGroup>
-          ))}
-        </SelectContent>
-      </Select>
-      <Select value={form.storeId} onValueChange={(storeId: UUID) => setForm(prev => ({ ...prev, storeId }))}>
-        <SelectTrigger className="w-full col-span-2" size="sm">
-          <SelectValue placeholder="Sklep" />
-        </SelectTrigger>
-        <SelectContent>
           <SelectGroup>
-            {stores.map(store => (
-              <SelectItem key={store.id} value={store.id}>
-                {store.name}
+            {categories.map(({ id, name }) => (
+              <SelectItem key={id} value={id.toString()}>
+                {name}
               </SelectItem>
             ))}
           </SelectGroup>
         </SelectContent>
+      </Select>
+      <Select
+        value={form.subcategoryId?.toString()}
+        onValueChange={subcategoryId => setForm(prev => ({ ...prev, subcategoryId: +subcategoryId }))}
+      >
+        <SelectTrigger className="w-full col-span-2" size="sm">
+          <SelectValue placeholder="Podkategoria" />
+        </SelectTrigger>
+        {subcats.length ? (
+          <SelectContent>
+            <SelectGroup>
+              {subcats.map(id => (
+                <SelectItem key={id} value={id.toString()}>
+                  {getSubcategoryById(id)?.name}
+                </SelectItem>
+              ))}
+            </SelectGroup>
+          </SelectContent>
+        ) : null}
       </Select>
       <div className="col-span-2">
         <DatePicker date={form.date} setDate={date => setForm(prev => ({ ...prev, date }))} />
