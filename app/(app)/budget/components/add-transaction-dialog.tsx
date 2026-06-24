@@ -13,7 +13,7 @@ export function AddTransactionDialog({
   fetchData: () => Promise<void>;
   categories: Category[];
   subcategories: Subcategory[];
-  categorySubcategories: CategorySubcategories[];
+  categorySubcategories: CategorySubcategories;
 }) {
   const [open, setOpen] = useState(false);
 

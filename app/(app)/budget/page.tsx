@@ -10,7 +10,7 @@ function useBudgetData() {
   const [data, setData] = useState<Operation[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [subcategories, setSubcategories] = useState<Subcategory[]>([]);
-  const [categorySubcategories, setCategorySubcategories] = useState<CategorySubcategories[]>([]);
+  const [categorySubcategories, setCategorySubcategories] = useState<CategorySubcategories>({});
 
   const fetchData = useCallback(async () => {
     const [dictRes, transRes] = await Promise.all([
@@ -21,7 +21,7 @@ function useBudgetData() {
     const dictionaries = (await dictRes.json()) as {
       categories: Category[];
       subcategories: Subcategory[];
-      categorySubcategories: CategorySubcategories[];
+      categorySubcategories: CategorySubcategories;
     };
     const transactions = await transRes.json();
 
