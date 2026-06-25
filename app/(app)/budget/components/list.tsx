@@ -16,11 +16,13 @@ import { UUID } from "crypto";
 import { format } from "date-fns";
 import { formatCurrency } from "@/lib/formatters/currency";
 import { Operation } from "@/app/api/budget/transactions/route";
+import { DeleteOperationDialog } from "./delete-operation-dialog";
+import { useState } from "react";
 
 export const BudgetList = ({
   categories,
   subcategories,
-  data,
+  data: operations,
   fetchData: refresh,
 }: {
   categories: Category[];
@@ -28,10 +30,7 @@ export const BudgetList = ({
   data: Operation[];
   fetchData: () => Promise<void>;
 }) => {
-  const handleDelete = async (id: number) => {
-    // await deleteTransaction(id);
-    // await refresh();
-  };
+  const [deleteOpen, setDeleteOpen] = useState(false);
 
   return (
     <div className="p-2">
@@ -48,14 +47,17 @@ export const BudgetList = ({
         </TableHeader>
         {
           <TableBody>
-            {data.map(({ amount, id, subcategoryId, categoryId, date, description }) => {
-              const store = subcategories.find(({ id }) => id === +subcategoryId)?.name;
+            {operations.map(operation => {
+              const { amount, id, subcategoryId, categoryId, date, description } = operation;
+              const subcategory = subcategories.find(({ id }) => id === +subcategoryId)?.name ?? "";
               const category = categories.find(({ id }) => id === +categoryId)?.name;
+
+              const operationIdentifier = `${format(date, "yyyy-MM-dd")} ${category} ${subcategory} ${formatCurrency(amount)}`;
 
               return (
                 <TableRow key={id}>
                   <TableCell>{format(date, "yyyy-MM-dd")}</TableCell>
-                  <TableCell>{store}</TableCell>
+                  <TableCell>{subcategory}</TableCell>
                   <TableCell>{category}</TableCell>
                   <TableCell>{formatCurrency(amount)}</TableCell>
                   <TableCell>{description}</TableCell>
@@ -70,9 +72,22 @@ export const BudgetList = ({
                       <DropdownMenuContent align="end">
                         <DropdownMenuItem>Edytuj</DropdownMenuItem>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem onClick={() => handleDelete(id)} variant="destructive">
+                        <DropdownMenuItem
+                          variant="destructive"
+                          onSelect={e => {
+                            e.preventDefault();
+                            setDeleteOpen(true);
+                          }}
+                        >
                           Usuń
                         </DropdownMenuItem>
+                        <DeleteOperationDialog
+                          open={deleteOpen}
+                          setOpen={setDeleteOpen}
+                          operationIdentifier={operationIdentifier}
+                          operationId={id}
+                          refresh={refresh}
+                        />
                       </DropdownMenuContent>
                     </DropdownMenu>
                   </TableCell>
