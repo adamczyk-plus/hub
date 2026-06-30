@@ -18,6 +18,8 @@ import { formatCurrency } from "@/lib/formatters/currency";
 import { Operation } from "@/app/api/budget/transactions/route";
 import { DeleteOperationDialog } from "./delete-operation-dialog";
 import { useState } from "react";
+import { DataTable } from "./data-table";
+import { columns } from "./columns";
 
 export const BudgetList = ({
   categories,
@@ -33,70 +35,76 @@ export const BudgetList = ({
   const [deleteOpen, setDeleteOpen] = useState(false);
 
   return (
-    <div className="p-2">
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Data</TableHead>
-            <TableHead>Sklep</TableHead>
-            <TableHead>Kategoria</TableHead>
-            <TableHead>Kwota</TableHead>
-            <TableHead>Info</TableHead>
-            <TableHead className="text-right">Akcje</TableHead>
-          </TableRow>
-        </TableHeader>
-        {
-          <TableBody>
-            {operations.map(operation => {
-              const { amount, id, subcategoryId, categoryId, date, description } = operation;
-              const subcategory = subcategories.find(({ id }) => id === +subcategoryId)?.name ?? "";
-              const category = categories.find(({ id }) => id === +categoryId)?.name;
-
-              const operationIdentifier = `${format(date, "yyyy-MM-dd")} ${category} ${subcategory} ${formatCurrency(amount)}`;
-
-              return (
-                <TableRow key={id}>
-                  <TableCell>{format(date, "yyyy-MM-dd")}</TableCell>
-                  <TableCell>{subcategory}</TableCell>
-                  <TableCell>{category}</TableCell>
-                  <TableCell>{formatCurrency(amount)}</TableCell>
-                  <TableCell>{description}</TableCell>
-                  <TableCell className="text-right">
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant={"ghost"} size={"icon"} className="size-8">
-                          <MoreHorizontalIcon />
-                          <span className="sr-only">Open menu</span>
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuItem>Edytuj</DropdownMenuItem>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem
-                          variant="destructive"
-                          onSelect={e => {
-                            e.preventDefault();
-                            setDeleteOpen(true);
-                          }}
-                        >
-                          Usuń
-                        </DropdownMenuItem>
-                        <DeleteOperationDialog
-                          open={deleteOpen}
-                          setOpen={setDeleteOpen}
-                          operationIdentifier={operationIdentifier}
-                          operationId={id}
-                          refresh={refresh}
-                        />
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </TableCell>
-                </TableRow>
-              );
-            })}
-          </TableBody>
-        }
-      </Table>
+    <div>
+      <DataTable data={operations} columns={columns} meta={{ categories, subcategories }} />
     </div>
   );
+
+  // return (
+  //   <div className="p-2">
+  //     <Table>
+  //       <TableHeader>
+  //         <TableRow>
+  //           <TableHead>Data</TableHead>
+  //           <TableHead>Sklep</TableHead>
+  //           <TableHead>Kategoria</TableHead>
+  //           <TableHead>Kwota</TableHead>
+  //           <TableHead>Info</TableHead>
+  //           <TableHead className="text-right">Akcje</TableHead>
+  //         </TableRow>
+  //       </TableHeader>
+  //       {
+  //         <TableBody>
+  //           {operations.map(operation => {
+  //             const { amount, id, subcategoryId, categoryId, date, description } = operation;
+  //             const subcategory = subcategories.find(({ id }) => id === +subcategoryId)?.name ?? "";
+  //             const category = categories.find(({ id }) => id === +categoryId)?.name;
+
+  //             const operationIdentifier = `${format(date, "yyyy-MM-dd")} ${category} ${subcategory} ${formatCurrency(amount)}`;
+
+  //             return (
+  //               <TableRow key={id}>
+  //                 <TableCell>{format(date, "yyyy-MM-dd")}</TableCell>
+  //                 <TableCell>{subcategory}</TableCell>
+  //                 <TableCell>{category}</TableCell>
+  //                 <TableCell>{formatCurrency(amount)}</TableCell>
+  //                 <TableCell>{description}</TableCell>
+  //                 <TableCell className="text-right">
+  //                   <DropdownMenu>
+  //                     <DropdownMenuTrigger asChild>
+  //                       <Button variant={"ghost"} size={"icon"} className="size-8">
+  //                         <MoreHorizontalIcon />
+  //                         <span className="sr-only">Open menu</span>
+  //                       </Button>
+  //                     </DropdownMenuTrigger>
+  //                     <DropdownMenuContent align="end">
+  //                       <DropdownMenuItem>Edytuj</DropdownMenuItem>
+  //                       <DropdownMenuSeparator />
+  //                       <DropdownMenuItem
+  //                         variant="destructive"
+  //                         onSelect={e => {
+  //                           e.preventDefault();
+  //                           setDeleteOpen(true);
+  //                         }}
+  //                       >
+  //                         Usuń
+  //                       </DropdownMenuItem>
+  //                       <DeleteOperationDialog
+  //                         open={deleteOpen}
+  //                         setOpen={setDeleteOpen}
+  //                         operationIdentifier={operationIdentifier}
+  //                         operationId={id}
+  //                         refresh={refresh}
+  //                       />
+  //                     </DropdownMenuContent>
+  //                   </DropdownMenu>
+  //                 </TableCell>
+  //               </TableRow>
+  //             );
+  //           })}
+  //         </TableBody>
+  //       }
+  //     </Table>
+  //   </div>
+  // );
 };
